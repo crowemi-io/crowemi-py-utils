@@ -11,5 +11,5 @@ setup(
     version='0.1',
     license='MIT',
     description='A collection of utils for interacting with the crowemi-io ecosystem',
-    long_description=open('README.txt').read(),
+    long_description=open('README.md').read(),
 )
