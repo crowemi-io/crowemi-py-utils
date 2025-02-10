@@ -1,9 +1,7 @@
 from pymongo import MongoClient
 
-from data_client import DataClient
 
-
-class MongoClient(DataClient):
+class MongoClient():
     def __init__(self, uri: str, database: str):
         self.client: MongoClient = MongoClient(uri)
         self.db = self.client.get_database(database)
