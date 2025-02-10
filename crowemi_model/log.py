@@ -8,7 +8,7 @@ class LogLevel:
     DEBUG = "debug"
 
 
-class LogMessages(pydantic.BaseModel):
+class LogMessage(pydantic.BaseModel):
     created_at: datetime
     app: str
     message: str
