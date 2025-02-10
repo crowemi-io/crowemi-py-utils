@@ -1,8 +1,13 @@
+import uuid
 from pymongo import MongoClient
 
 
-class MongoClient():
-    def __init__(self, uri: str, database: str):
+class MongoDBClient():
+    def __init__(self, uri: str, database: str = "crowemi-trades", session_id: str = None):
+        if not session_id:
+            session_id = uuid.uuid4().hex
+
+        self.session_id = session_id
         self.client: MongoClient = MongoClient(uri)
         self.db = self.client.get_database(database)
 

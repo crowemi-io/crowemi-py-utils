@@ -15,5 +15,5 @@ class LogMessage(pydantic.BaseModel):
     app: str
     message: str
     level: str = LogLevel.INFO
-    obj: dict | None
+    obj: dict = {}
     session: str = ""
