@@ -1,7 +1,9 @@
-import pydantic
 from datetime import datetime
+from enum import Enum
 
-class LogLevel:
+import pydantic
+
+class LogLevel(Enum):
     INFO = "info"
     ERROR = "error"
     WARNING = "warning"

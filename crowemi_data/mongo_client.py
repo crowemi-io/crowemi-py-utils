@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from data.data_client import DataClient
+from data_client import DataClient
 
 
 class MongoClient(DataClient):
