@@ -1,0 +1,7 @@
+.venv/
+.secret/
+__pycache__/
+.vscode/
+.terraform/
+.terraform.lock.hcl
+.DS_Store
