@@ -11,9 +11,9 @@ class LogLevel(Enum):
 
 
 class LogMessage(pydantic.BaseModel):
-    created_at: datetime
+    created_at: datetime = datetime.now()
     app: str
     message: str
     level: str = LogLevel.INFO
-    obj: dict
-    session: str
+    obj: dict | None
+    session: str = ""
