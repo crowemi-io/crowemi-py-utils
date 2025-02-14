@@ -3,6 +3,11 @@ from enum import Enum
 
 import pydantic
 
+from google.cloud import pubsub_v1
+
+PUBLISHER = pubsub_v1.PublisherClient()
+TOPIC = PUBLISHER.topic_path("crowemi-io", "crowemi-log-dev")
+
 class LogLevel(Enum):
     INFO = "info"
     ERROR = "error"
@@ -17,3 +22,14 @@ class LogMessage(pydantic.BaseModel):
     level: str = LogLevel.INFO
     obj: object | None = None
     session: str = ""
+
+    def log(self, project: str, topic: str):
+        try:
+            data = self.model_dump_json()
+            data = data.encode("utf-8")
+            topic = PUBLISHER.topic_path(project, topic)
+            future = PUBLISHER.publish(topic, data)
+            print(future.result())
+        except Exception as e:
+            print("Failed writing message to pubsub.")
+            print(e)
