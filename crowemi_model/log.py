@@ -22,6 +22,7 @@ class LogMessage(pydantic.BaseModel):
     level: str = LogLevel.INFO
     obj: object | None = None
     session: str | None = ""
+    path: str | None
 
     def log(self, project: str, topic: str):
         try:
