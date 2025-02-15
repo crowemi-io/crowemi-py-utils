@@ -6,7 +6,7 @@ import pydantic
 from google.cloud import pubsub_v1
 
 PUBLISHER = pubsub_v1.PublisherClient()
-TOPIC = PUBLISHER.topic_path("crowemi-io", "crowemi-log-dev")
+
 
 class LogLevel(Enum):
     INFO = "info"
@@ -21,7 +21,7 @@ class LogMessage(pydantic.BaseModel):
     message: str
     level: str = LogLevel.INFO
     obj: object | None = None
-    session: str = ""
+    session: str | None = ""
 
     def log(self, project: str, topic: str):
         try:
