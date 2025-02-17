@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import patch, MagicMock
 from datetime import datetime
 from crowemi_model.log import LogMessage, LogLevel
 
@@ -12,7 +11,8 @@ class TestLogMessage(unittest.TestCase):
             "message": "test_message",
             "level": LogLevel.INFO.value,
             "created_at": datetime.now(),
-            "session": "test_session"
+            "session": "test_session",
+            "path": None
         })
 
         self.assertEqual(log_message.app, "test_app")

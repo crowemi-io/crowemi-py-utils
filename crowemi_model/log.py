@@ -21,8 +21,8 @@ class LogMessage(pydantic.BaseModel):
     message: str
     level: str = LogLevel.INFO
     obj: object | None = None
-    session: str | None = ""
-    path: str | None
+    session: str | None = None
+    path: str | None = None
 
     def log(self, project: str, topic: str):
         try:
