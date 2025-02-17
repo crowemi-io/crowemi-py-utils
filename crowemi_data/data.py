@@ -2,7 +2,7 @@ import uuid
 from pymongo import MongoClient, AsyncMongoClient
 
 
-class AsnyMongoDBClient():
+class AsyncMongoDBClient():
     def __init__(self, uri: str, database: str, session_id: str = None):
 
         if not session_id:
