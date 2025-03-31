@@ -1,6 +1,19 @@
 import base64
 import json
+from pydantic import BaseModel
 
+
+class CrowemiConfig(BaseModel):
+    client_name: str
+    client_id: str
+    client_secret_key: str
+    uri: dict
+
+class CrowemiHeaders(BaseModel):
+    crowemi_client_name: str | None = None
+    crowemi_client_id: str
+    crowemi_client_secret_key: str
+    crowemi_session_id: str | None = None
 
 class Helper():
     @staticmethod
