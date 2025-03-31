@@ -4,16 +4,18 @@ from pydantic import BaseModel
 
 
 class CrowemiConfig(BaseModel):
+    """
+    A class to represent the configuration of a Crowemi client.
+    Attributes:
+        crowemi_client_name (str): The name of the Crowemi client.
+        crowemi_client_id (str): The client ID associated with the Crowemi service.
+        crowemi_client_secret_key (str): The secret key for the Crowemi client.
+        uri (dict): A dictionary containing the URIs for the Crowemi client.
+    """
     client_name: str
     client_id: str
     client_secret_key: str
     uri: dict
-
-class CrowemiHeaders(BaseModel):
-    crowemi_client_name: str | None = None
-    crowemi_client_id: str
-    crowemi_client_secret_key: str
-    crowemi_session_id: str | None = None
 
     def create_headers(self) -> dict:
         """
@@ -33,6 +35,13 @@ class CrowemiHeaders(BaseModel):
             "crowmei-client-name": self.crowemi_client_name,
             "Content-Type": "application/json"
         }
+
+class CrowemiHeaders(BaseModel):
+    crowemi_client_name: str | None = None
+    crowemi_client_id: str
+    crowemi_client_secret_key: str
+    crowemi_session_id: str | None = None
+
 
 class Helper():
     @staticmethod
