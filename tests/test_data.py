@@ -21,6 +21,15 @@ class TestAsyncMongoDBClient(unittest.IsolatedAsyncioTestCase):
         ret = await self.client.read(collection="test_collection", query={"_id": object_id})
         self.assertTrue(len(ret) > 0)
 
+    async def test_read_projection(self):
+        object_id = await self.test_create()
+        ret = await self.client.read(collection="test_collection", query={"_id": object_id}, projection={"test": 1})
+        # tests that "test" is in the projection
+        self.assertTrue("test" in ret[0])
+        ret = await self.client.read(collection="test_collection", query={"_id": object_id}, projection={"test": 0})
+        # tests that "test" is not in the projection
+        self.assertTrue("test" not in ret[0])
+
     async def test_delete(self):
         object_id = await self.test_create()
         ret = await self.client.delete(collection="test_collection", query={"_id": object_id})

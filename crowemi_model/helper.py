@@ -32,7 +32,7 @@ class CrowemiConfig(BaseModel):
         return {
             "crowemi-client-id": self.client_id,
             "crowemi-client-secret-key": self.client_secret_key,
-            "crowmei-client-name": self.client_name,
+            "crowemi-client-name": self.client_name,
             "Content-Type": "application/json"
         }
 

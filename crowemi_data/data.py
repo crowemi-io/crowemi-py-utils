@@ -27,12 +27,12 @@ class AsyncMongoDBClient(Base):
         except Exception as e:
             raise e
 
-    async def read(self, collection: str, query: dict) -> list:
+    async def read(self, collection: str, query: dict, projection: dict) -> list:
         try:
             ret = list()
             database = self.client.get_database(self.database)
             collection = database.get_collection(collection)
-            ret = await collection.find(query).to_list(length=None)
+            ret = await collection.find(query, projection).to_list(length=None)
             return ret
         except Exception as e:
             raise e
