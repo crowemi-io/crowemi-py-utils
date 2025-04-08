@@ -1,6 +1,7 @@
 import base64
 import json
 from pydantic import BaseModel
+from crowemi_cloud.gcp import get_default_credential_token
 
 
 class CrowemiConfig(BaseModel):
@@ -17,7 +18,7 @@ class CrowemiConfig(BaseModel):
     client_secret_key: str
     uri: dict
 
-    def create_headers(self) -> dict:
+    def create_headers(self, include_default_credentials: bool) -> dict:
         """
         Creates and returns a dictionary of headers for HTTP requests within the crowemi eco-system.
         The headers include:
@@ -29,12 +30,16 @@ class CrowemiConfig(BaseModel):
             dict: A dictionary containing the headers for HTTP requests.
         """
 
-        return {
+        headers = {
             "crowemi-client-id": self.client_id,
             "crowemi-client-secret-key": self.client_secret_key,
             "crowemi-client-name": self.client_name,
             "Content-Type": "application/json"
         }
+        if include_default_credentials:
+            token = get_default_credential_token()
+            headers["Authorization"] = f"Bearer {token}"
+        return headers
 
 class CrowemiHeaders(BaseModel):
     crowemi_client_name: str | None = None

@@ -6,7 +6,7 @@ setup(
     author='Andy Crowe',
     author_email='andy.crowe@crowemi.com',
     packages=['crowemi_data', 'crowemi_model', 'crowemi_cloud'],
-    version='0.0.3',
+    version='0.0.4',
     install_requires=open('requirements.txt').read().splitlines(),
     license='MIT',
     description='A collection of utils for interacting with the crowemi-io ecosystem',
