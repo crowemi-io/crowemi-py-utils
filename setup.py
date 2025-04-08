@@ -5,7 +5,7 @@ setup(
     url='https://github.com/crowemi-io/crowemi-py-utils',
     author='Andy Crowe',
     author_email='andy.crowe@crowemi.com',
-    packages=['crowemi_data', 'crowemi_model', 'crowemi_cloud'],
+    packages=['crowemi'],
     version='0.0.5',
     install_requires=open('requirements.txt').read().splitlines(),
     license='MIT',

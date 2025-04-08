@@ -1,5 +1,5 @@
 import unittest
-from crowemi_cloud.gcp import get_default_credential_token
+from crowemi.cloud.gcp import get_default_credential_token
 import requests
 
 
