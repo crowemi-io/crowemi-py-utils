@@ -1,7 +1,10 @@
+from datetime import datetime, UTC
 import base64
 import json
 from pydantic import BaseModel
+
 from crowemi_cloud.gcp import get_default_credential_token
+from crowemi_model.log import LogMessage, LogLevel
 
 
 class CrowemiConfig(BaseModel):
@@ -40,6 +43,26 @@ class CrowemiConfig(BaseModel):
             token = get_default_credential_token()
             headers["Authorization"] = f"Bearer {token}"
         return headers
+
+class CrowemiConfigBase(BaseModel):
+    crowemi: CrowemiConfig
+    gcp_project_id: str
+    gcp_log_topic: str
+
+    @staticmethod
+    def convert_config(b64: str | None) -> dict | None:
+        if b64:
+            try:
+                config = base64.b64decode(b64).decode("utf-8")
+                return json.loads(config)
+            except Exception as e:
+                print(f"Error reading config file: {e}")
+                return None
+
+    def log(self, message: str, level: LogLevel, session_id: str = "", path: str = None, obj: any = None):
+        LogMessage(**{"created": datetime.now(UTC), "app": self.crowemi.client_name, "message": message, "level": level.value, "session": session_id, "path": path, "obj": obj}).log(self.gcp_project_id, self.gcp_log_topic)
+
+
 
 class CrowemiHeaders(BaseModel):
     crowemi_client_name: str | None = None
