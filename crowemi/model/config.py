@@ -3,8 +3,8 @@ import base64
 import json
 from pydantic import BaseModel
 
-from crowemi_cloud.gcp import get_default_credential_token
-from crowemi_model.log import LogMessage, LogLevel
+from cloud.gcp import get_default_credential_token
+from model.log import LogMessage, LogLevel
 
 
 class CrowemiConfig(BaseModel):
@@ -60,7 +60,7 @@ class CrowemiConfigBase(BaseModel):
                 return None
 
     def log(self, message: str, level: LogLevel, session_id: str = "", path: str = None, obj: any = None):
-        LogMessage(**{"created": datetime.now(UTC), "app": self.crowemi.client_name, "message": message, "level": level.value, "session": session_id, "path": path, "obj": obj}).log(self.gcp_project_id, self.gcp_log_topic)
+        LogMessage(**{"created_at": datetime.now(UTC), "app": self.crowemi.client_name, "message": message, "level": level.value, "session": session_id, "path": path, "obj": obj}).log(self.gcp_project_id, self.gcp_log_topic)
 
 
 
