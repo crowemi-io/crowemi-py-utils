@@ -3,8 +3,8 @@ import base64
 import json
 from pydantic import BaseModel
 
-from cloud.gcp import get_default_credential_token
-from model.log import LogMessage, LogLevel
+from crowemi.cloud.gcp.auth import get_default_credential_token
+from crowemi.model.log import LogMessage, LogLevel
 
 
 class CrowemiConfig(BaseModel):
