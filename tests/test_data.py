@@ -4,7 +4,7 @@ from datetime import datetime
 
 from bson import ObjectId
 
-from crowemi_data.data import AsyncMongoDBClient, MongoDBClient
+from crowemi.data.mongo import AsyncMongoDBClient, MongoDBClient
 
 
 class TestAsyncMongoDBClient(unittest.IsolatedAsyncioTestCase):

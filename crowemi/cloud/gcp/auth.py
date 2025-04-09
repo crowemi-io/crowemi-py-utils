@@ -1,18 +1,20 @@
+import google.oauth2.id_token
 import google.auth
 from google.auth.transport.requests import Request
 
 
-def get_default_credential_token() -> str:
+def get_gcp_id_token(audience: str) -> str:
     """
-    Get the default credentials for Google Cloud.
+    Get the ID token for the default credentials.
+    Args:
+        audience (str): The audience for which the ID token is requested.
     Returns:
-        str: The default credentials for Google Cloud.
+        str: the ID token for the default credentials.
     """
     try:
-        credentials, project_id = google.auth.default()
-        if not credentials.valid:
-            credentials.refresh(Request())
-        token = credentials.id_token
-        return token
+        credentials, _ = google.auth.default()
+        request = Request()
+        id_token = google.oauth2.id_token.fetch_id_token(request, audience)
+        return id_token
     except Exception as e:
         raise e

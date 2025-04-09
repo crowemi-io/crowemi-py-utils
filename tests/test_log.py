@@ -1,6 +1,6 @@
 import unittest
 from datetime import datetime
-from crowemi_model.log import LogMessage, LogLevel
+from crowemi.model.log import LogMessage, LogLevel
 
 
 class TestLogMessage(unittest.TestCase):
