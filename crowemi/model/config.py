@@ -21,33 +21,12 @@ class CrowemiConfig(BaseModel):
     client_secret_key: str
     uri: dict
 
-    def create_headers(self, include_default_credentials: bool, audience: str) -> dict:
-        """
-        Creates and returns a dictionary of headers for HTTP requests within the crowemi eco-system.
-        The headers include:
-        - `crowemi-client-id`: The client ID associated with the crowemi service.
-        - `crowemi-client-secret-key`: The secret key for the crowemi client.
-        - `crowmei-client-name`: The name of the Crowemi client.
-        - `Content-Type`: Specifies the content type as JSON.
-        Returns:
-            dict: A dictionary containing the headers for HTTP requests.
-        """
-
-        headers = {
-            "crowemi-client-id": self.client_id,
-            "crowemi-client-secret-key": self.client_secret_key,
-            "crowemi-client-name": self.client_name,
-            "Content-Type": "application/json"
-        }
-        if include_default_credentials:
-            token = get_gcp_id_token(audience)
-            headers["Authorization"] = f"Bearer {token}"
-        return headers
-
-class CrowemiConfigBase(BaseModel):
+class ConfigBase(BaseModel):
     crowemi: CrowemiConfig
     gcp_project_id: str
     gcp_log_topic: str
+    env: str
+    debug: bool = False
 
     @staticmethod
     def convert_config(b64: str | None) -> dict | None:
@@ -62,14 +41,34 @@ class CrowemiConfigBase(BaseModel):
     def log(self, message: str, level: LogLevel, session_id: str = "", path: str = None, obj: any = None):
         LogMessage(**{"created_at": datetime.now(UTC), "app": self.crowemi.client_name, "message": message, "level": level.value, "session": session_id, "path": path, "obj": obj}).log(self.gcp_project_id, self.gcp_log_topic)
 
+    def create_headers(self, audience: str) -> dict:
+        """
+        Creates and returns a dictionary of headers for HTTP requests within the crowemi eco-system.
+        The headers include:
+        - `crowemi-client-id`: The client ID associated with the crowemi service.
+        - `crowemi-client-secret-key`: The secret key for the crowemi client.
+        - `crowmei-client-name`: The name of the Crowemi client.
+        - `Content-Type`: Specifies the content type as JSON.
+        Returns:
+            dict: A dictionary containing the headers for HTTP requests.
+        """
 
+        headers = {
+            "crowemi-client-id": self.crowemi.client_id,
+            "crowemi-client-secret-key": self.crowemi.client_secret_key,
+            "crowemi-client-name": self.crowemi.client_name,
+            "Content-Type": "application/json"
+        }
+        if self.env in ('dev', 'prod'):
+            token = get_gcp_id_token(audience)
+            headers["Authorization"] = f"Bearer {token}"
+        return headers
 
 class CrowemiHeaders(BaseModel):
     crowemi_client_name: str | None = None
     crowemi_client_id: str
     crowemi_client_secret_key: str
     crowemi_session_id: str | None = None
-
 
 class Helper():
     @staticmethod
