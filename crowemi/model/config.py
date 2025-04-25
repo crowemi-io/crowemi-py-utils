@@ -7,6 +7,31 @@ from crowemi.cloud.gcp.auth import get_gcp_id_token
 from crowemi.model.log import LogMessage, LogLevel
 
 
+class GoogleCloudCredentials(BaseModel):
+    type: str
+    project_id: str
+    private_key_id: str
+    private_key: str
+    client_email: str
+    client_id: str
+    auth_uri: str
+    token_uri: str
+    auth_provider_x509_cert_url: str
+    client_x509_cert_url: str
+    universe_domain: str
+
+class GoogleCloudConfig(BaseModel):
+    """
+    A class to represent the configuration of a Google Cloud project.
+    Attributes:
+        project_id (str): The ID of the Google Cloud project.
+        log_topic (str): The name of the log topic in Google Cloud Pub/Sub.
+    """
+    project_id: str
+    log_topic: str
+    service_account: GoogleCloudCredentials | None
+
+
 class CrowemiConfig(BaseModel):
     """
     A class to represent the configuration of a Crowemi client.
@@ -23,8 +48,7 @@ class CrowemiConfig(BaseModel):
 
 class ConfigBase(BaseModel):
     crowemi: CrowemiConfig
-    gcp_project_id: str
-    gcp_log_topic: str
+    gcp: GoogleCloudConfig
     env: str
     debug: bool = False
 
@@ -69,6 +93,7 @@ class CrowemiHeaders(BaseModel):
     crowemi_client_id: str
     crowemi_client_secret_key: str
     crowemi_session_id: str | None = None
+    crowemi_user_auth_token: str | None = None
 
 class Helper():
     @staticmethod
