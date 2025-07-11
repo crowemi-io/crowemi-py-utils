@@ -1,7 +1,9 @@
 from datetime import datetime, UTC
 import base64
 import json
+
 from pydantic import BaseModel
+from typing import Optional
 
 from crowemi.cloud.gcp.auth import get_gcp_id_token
 from crowemi.model.log import LogMessage, LogLevel
@@ -29,7 +31,7 @@ class GoogleCloudConfig(BaseModel):
     """
     project_id: str
     log_topic: str
-    service_account: GoogleCloudCredentials | None
+    service_account: Optional[GoogleCloudCredentials] = None
 
 
 class CrowemiConfig(BaseModel):
