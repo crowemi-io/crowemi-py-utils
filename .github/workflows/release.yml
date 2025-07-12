@@ -25,12 +25,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Extract version from setup.py
+        id: get_version
+        run: |
+          VERSION=$(python -c "import re; f=open('setup.py').read(); print(re.search(r\"version=['\\\"]([^'\\\"]*)['\\\"]\", f).group(1))")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
       - name: Bump version and create release
         id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ github.run_number }}
-          name: Release ${{ github.run_number }}
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: ${{ steps.get_version.outputs.version }}
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
