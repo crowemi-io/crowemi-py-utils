@@ -6,6 +6,10 @@ MAX_POOL_SIZE = 10
 MIN_POOL_SIZE = 1
 MAX_IDLE_TIME = 60000 # 60 seconds
 
+class Sort:
+    direction: str
+    field: str
+
 class Base():
     def __init__(self, database: str, session_id: str = None):
         if not session_id:
@@ -70,12 +74,34 @@ class MongoDBClient(Base):
         except Exception as e:
             raise e
 
-    def read(self, collection: str, query: dict) -> list:
+    def read(self, collection: str, query: dict, limit: int = None, sort: Sort = None) -> list:
         try:
             database = self.client.get_database(self.database)
             collection = database.get_collection(collection)
-            ret = collection.find(query).to_list(length=None)
-            return ret
+
+            # sort only
+            if sort and limit is None:
+                if sort.direction.lower() == 'asc':
+                    ret = collection.find(query).sort(sort.field, 1)
+                elif sort.direction.lower() == 'desc':
+                    ret = collection.find(query).sort(sort.field, -1)
+
+            # limit only
+            if limit and sort is None:
+                ret = collection.find(query).limit(limit)
+
+            # sort and limit
+            if limit and sort:
+                if sort.direction.lower() == 'asc':
+                    ret = collection.find(query).sort(sort.field, 1).limit(limit)
+                elif sort.direction.lower() == 'desc':
+                    ret = collection.find(query).sort(sort.field, -1).limit(limit)
+
+            # default, no limit or sort
+            if not limit and not sort:
+                ret = collection.find(query)
+
+            return ret.to_list(length=None)
         except Exception as e:
             raise e
 
