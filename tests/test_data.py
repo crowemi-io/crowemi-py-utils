@@ -30,6 +30,12 @@ class TestAsyncMongoDBClient(unittest.IsolatedAsyncioTestCase):
         # tests that "test" is not in the projection
         self.assertTrue("test" not in ret[0])
 
+    async def test_read_sort(self):
+        object_id = await self.test_create()
+        ret = await self.client.read(collection="test_collection", query={"_id": object_id}, projection={}, sort=[("test", 1)])
+        # tests that the result is sorted by "test" in ascending order
+        self.assertTrue(ret[0]["test"] == "test")
+
     async def test_delete(self):
         object_id = await self.test_create()
         ret = await self.client.delete(collection="test_collection", query={"_id": object_id})

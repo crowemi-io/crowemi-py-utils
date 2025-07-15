@@ -6,9 +6,6 @@ MAX_POOL_SIZE = 10
 MIN_POOL_SIZE = 1
 MAX_IDLE_TIME = 60000 # 60 seconds
 
-class Sort:
-    direction: str
-    field: str
 
 class Base():
     def __init__(self, database: str, session_id: str = None):
@@ -31,12 +28,17 @@ class AsyncMongoDBClient(Base):
         except Exception as e:
             raise e
 
-    async def read(self, collection: str, query: dict, projection: dict) -> list:
+    async def read(self, collection: str, query: dict, projection: dict, limit: int = None, sort: list[tuple] = None) -> list:
         try:
-            ret = list()
             database = self.client.get_database(self.database)
             collection = database.get_collection(collection)
-            ret = await collection.find(query, projection).to_list(length=None)
+
+            cursor = collection.find(query, projection)
+            if sort:
+                cursor = cursor.sort(sort)
+            if limit:
+                cursor = cursor.limit(limit)
+            ret = await cursor.to_list(length=None)
             return ret
         except Exception as e:
             raise e
@@ -74,17 +76,16 @@ class MongoDBClient(Base):
         except Exception as e:
             raise e
 
-    def read(self, collection: str, query: dict, limit: int = None, sort: Sort = None) -> list:
+    def read(self, collection: str, query: dict, limit: int = None, sort: list[tuple] = None) -> list:
+        ''' sort list of tuple [(field, direction)]
+        '''
         try:
             database = self.client.get_database(self.database)
             collection = database.get_collection(collection)
 
             # sort only
             if sort and limit is None:
-                if sort.direction.lower() == 'asc':
-                    ret = collection.find(query).sort(sort.field, 1)
-                elif sort.direction.lower() == 'desc':
-                    ret = collection.find(query).sort(sort.field, -1)
+                ret = collection.find(query).sort(sort)
 
             # limit only
             if limit and sort is None:
@@ -92,10 +93,7 @@ class MongoDBClient(Base):
 
             # sort and limit
             if limit and sort:
-                if sort.direction.lower() == 'asc':
-                    ret = collection.find(query).sort(sort.field, 1).limit(limit)
-                elif sort.direction.lower() == 'desc':
-                    ret = collection.find(query).sort(sort.field, -1).limit(limit)
+                ret = collection.find(query).sort(sort.field, 1).limit(limit)
 
             # default, no limit or sort
             if not limit and not sort:
