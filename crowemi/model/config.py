@@ -65,7 +65,7 @@ class ConfigBase(BaseModel):
                 return None
 
     def log(self, message: str, level: LogLevel, session_id: str = "", path: str = None, obj: any = None):
-        LogMessage(**{"created_at": datetime.now(UTC), "app": self.crowemi.client_name, "message": message, "level": level.value, "session": session_id, "path": path, "obj": obj}).log(self.gcp_project_id, self.gcp_log_topic)
+        LogMessage(**{"created_at": datetime.now(UTC), "app": self.crowemi.client_name, "message": message, "level": level.value, "session": session_id, "path": path, "obj": obj}).log(self.gcp.project_id, self.gcp.log_topic)
 
     def create_headers(self, audience: str) -> dict:
         """
