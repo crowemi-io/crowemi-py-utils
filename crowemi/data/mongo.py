@@ -19,15 +19,14 @@ class AsyncMongoDBClient(Base):
         super().__init__(database, session_id)
         self.client: AsyncMongoClient = AsyncMongoClient(uri, maxPoolSize=MAX_POOL_SIZE, minPoolSize=MIN_POOL_SIZE, maxIdleTimeMS = MAX_IDLE_TIME)
 
-    async def create(self, collection: str, data: dict, many: bool = False) -> str:
+    async def create(self, collection: str, data: dict, batch: bool = False) -> str:
         try:
             database = self.client.get_database(self.database)
             collection = database.get_collection(collection)
-            if many:
-                ret = await collection.insert_many(data)
+            if batch:
+                return await collection.insert_many(data)
             else:
-                ret = await collection.insert_one(data)
-            return ret.inserted_id
+                return await collection.insert_one(data)
         except Exception as e:
             raise e
 

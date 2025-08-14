@@ -16,6 +16,12 @@ class TestAsyncMongoDBClient(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(type(ret) == ObjectId)
         return ret
 
+    async def test_create_many(self):
+        ret = await self.client.create(collection="test_collection", data=[{"test": "test"}, {"test": "test2"}, {"test": "test3"}], batch=True)
+        ids = ret["inserted_ids"]
+        self.assertTrue(len(ids) == 3)
+        return ret
+
     async def test_read(self):
         object_id = await self.test_create()
         ret = await self.client.read(collection="test_collection", query={"_id": object_id})
