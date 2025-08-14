@@ -19,11 +19,14 @@ class AsyncMongoDBClient(Base):
         super().__init__(database, session_id)
         self.client: AsyncMongoClient = AsyncMongoClient(uri, maxPoolSize=MAX_POOL_SIZE, minPoolSize=MIN_POOL_SIZE, maxIdleTimeMS = MAX_IDLE_TIME)
 
-    async def create(self, collection: str, data: dict) -> str:
+    async def create(self, collection: str, data: dict, many: bool = False) -> str:
         try:
             database = self.client.get_database(self.database)
             collection = database.get_collection(collection)
-            ret = await collection.insert_one(data)
+            if many:
+                ret = await collection.insert_many(data)
+            else:
+                ret = await collection.insert_one(data)
             return ret.inserted_id
         except Exception as e:
             raise e
@@ -43,11 +46,14 @@ class AsyncMongoDBClient(Base):
         except Exception as e:
             raise e
 
-    async def update(self, collection: str, query: dict, data: dict) -> int:
+    async def update(self, collection: str, query: dict, data: dict, upsert: bool = False) -> int:
         try:
             database = self.client.get_database(self.database)
             collection = database.get_collection(collection)
-            ret = await collection.update_one(filter=query, update=data)
+            if upsert:
+                ret = await collection.update_one(filter=query, update=data, upsert=upsert)
+            else:
+                ret = await collection.update_one(filter=query, update=data)
             return ret.modified_count
         except Exception as e:
             raise e

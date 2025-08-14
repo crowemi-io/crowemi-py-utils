@@ -46,6 +46,10 @@ class TestAsyncMongoDBClient(unittest.IsolatedAsyncioTestCase):
         ret = await self.client.update(collection="test_collection", query={"_id": object_id}, data={'$set': {"test": "updated_test"}})
         self.assertTrue(ret > 0)
 
+    async def test_updsert(self):
+        ret = await self.client.update(collection="test_collection", query={"test": "upsert_test22"}, data={'$set': {"test": "updated"}}, upsert=True)
+        self.assertTrue(ret > 0)
+
 class TestMongoDBClient(unittest.TestCase):
     def setUp(self):
         self.client = MongoDBClient(uri="mongodb://root:example@localhost:27017/", database="test_db")
